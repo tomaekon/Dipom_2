@@ -8,7 +8,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserLogout {
-
     private String refreshToken;
-
 }

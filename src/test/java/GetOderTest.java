@@ -1,3 +1,4 @@
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -19,6 +20,7 @@ public class GetOderTest {
     private String accessToken;
     public UserLogout userLogout;
     public List<String> ingredients;
+    Response response;
 
     @Before
     public void setUp() {
@@ -42,25 +44,23 @@ public class GetOderTest {
 
     @After
     public void tearDown() {
-        try {
-            if (refreshToken.isEmpty()) userClient.logout(userLogout);
-        } catch (NullPointerException e) {
-            System.out.println("Passed with Exception");
-        }
+        refreshToken = response.then().extract().path("refreshToken");
+        boolean refreshNotNullAndIsEmpty = (refreshToken != null) && (refreshToken.isEmpty());
+        if (refreshNotNullAndIsEmpty) userClient.logout(userLogout);
     }
 
-    //Проверка получение заказа для неаввторизированного пользователя
     @Test
+    @DisplayName("Проверка получение заказа для неаввторизированного пользователя")
     public void getOderForUserWithoutAuthorizationTest() {
 
-        Response response = oderClient.getOderUserWithoutAuthorization();
+        response = oderClient.getOderUserWithoutAuthorization();
         response.then().assertThat().body("success", equalTo(false)).and().statusCode(401);
     }
 
-    //Проверка получение заказа для аввторизированного пользователя
     @Test
+    @DisplayName("Проверка получение заказа для аввторизированного пользователя")
     public void getOderForUserWithAuthorizationTest() {
-        Response response = oderClient.getOderUserWithAuthorization(accessToken);
+        response = oderClient.getOderUserWithAuthorization(accessToken);
         response.then().assertThat().body("success", equalTo(true)).and().statusCode(200);
     }
 }

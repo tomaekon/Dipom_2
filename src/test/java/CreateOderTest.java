@@ -1,3 +1,4 @@
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -43,15 +44,12 @@ public class CreateOderTest {
 
     @After
     public void tearDown() {
-        try {
-            if (refreshToken.isEmpty()) userClient.logout(userLogout);
-        } catch (NullPointerException e) {
-            System.out.println("Passed with Exception");
-        }
+        boolean refreshNotNullAndIsEmpty = (refreshToken != null) && (refreshToken.isEmpty());
+        if (refreshNotNullAndIsEmpty) userClient.logout(userLogout);
     }
 
-    //Проверка создания заказа пользователем без авторизации
     @Test
+    @DisplayName("Проверка создания заказа пользователем без авторизации")
     public void createOderWithoutAuthorizationTest() {
         oderClient = new OderClient();
         oder = new Oder(ingredients);
@@ -59,8 +57,8 @@ public class CreateOderTest {
         response.then().assertThat().body("success", equalTo(true)).and().statusCode(200);
     }
 
-    //Проверка создания заказа авторизированным пользователем
     @Test
+    @DisplayName("Проверка создания заказа авторизированным пользователем")
     public void createOderWithAuthorizationTest() {
         oder = new Oder(ingredients);
         oderClient = new OderClient();
@@ -68,8 +66,8 @@ public class CreateOderTest {
         response.then().assertThat().body("success", equalTo(true)).and().statusCode(200);
     }
 
-    //Проверка создания заказа с неверным хэшем ингредиента
     @Test
+    @DisplayName("Проверка создания заказа с неверным хэшем ингредиента")
     public void createOderWithIncorrectIngredient() {
 
         ingredients.add("Test");
@@ -79,8 +77,8 @@ public class CreateOderTest {
         response.then().assertThat().statusCode(500);
     }
 
-    //Проверка создания заказа без ингредиентов
     @Test
+    @DisplayName("Проверка создания заказа без ингредиентов")
     public void createOderWithNullIngredient() {
 
         ingredients.clear();

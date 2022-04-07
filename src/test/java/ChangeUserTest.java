@@ -1,4 +1,5 @@
 import com.github.javafaker.Faker;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -25,15 +26,12 @@ public class ChangeUserTest {
 
     @After
     public void tearDown() {
-        try {
-            if (refreshToken.isEmpty()) userClient.logout(userLogout);
-        } catch (NullPointerException e) {
-            System.out.println("Passed with Exception");
-        }
+        boolean refreshNotNullAndIsEmpty = (refreshToken != null) && (refreshToken.isEmpty());
+        if (refreshNotNullAndIsEmpty) userClient.logout(userLogout);
     }
 
-    //Проверка изменения данных логина для авторизированного пользователя
     @Test
+    @DisplayName("Проверка изменения данных логина для авторизированного пользователя")
     public void UserAuthorizationChangeEmailTest() {
         userClient.getDataUser(accessToken);
         user.setEmail(faker.internet().emailAddress());
@@ -41,8 +39,8 @@ public class ChangeUserTest {
         response.then().assertThat().body("success", equalTo(true)).and().statusCode(200);
     }
 
-    //Проверка изменения данных имени для авторизированного пользователя
     @Test
+    @DisplayName("Проверка изменения данных имени для авторизированного пользователя")
     public void UserAuthorizationChangeNameTest() {
         userClient.getDataUser(accessToken);
         user.setName(faker.name().firstName());
@@ -50,8 +48,8 @@ public class ChangeUserTest {
         response.then().assertThat().body("success", equalTo(true)).and().statusCode(200);
     }
 
-    //Проверка изменения данных логина для неавторизированного пользователя
     @Test
+    @DisplayName("Проверка изменения данных логина для неавторизированного пользователя")
     public void UserNoAuthorizationChangeEmailTest() {
         userClient.getDataUser(accessToken);
         user.setEmail(faker.internet().emailAddress());
@@ -59,8 +57,8 @@ public class ChangeUserTest {
         response.then().assertThat().body("success", equalTo(false)).and().statusCode(401);
     }
 
-    //Проверка изменения данных имени для неавторизированного пользователя
     @Test
+    @DisplayName("Проверка изменения данных имени для неавторизированного пользователя")
     public void UserNoAuthorizationChangeNameTest() {
         userClient.getDataUser(accessToken);
         user.setName(faker.name().firstName());

@@ -12,8 +12,6 @@ public class IngredientClient extends RestAssuredClient {
                 .spec(getBaseSpec())
                 .get(USER_PATH)
                 .as(Ingredient.class);
-
-
     }
 }
 
